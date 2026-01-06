@@ -1,0 +1,27 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import {useTranslations, getLangFromUrl} from '../../i18n/ui.ts'
+import { languages } from "../../i18n/ui.ts"
+import TryKiwi from "../../components/TryKiwi.astro"
+import WhyKiwi from "../../components/WhyKiwi.astro"
+import Hero from "../../components/Hero.astro"
+
+export function getStaticPaths() {
+    return Object.keys(languages).map(l => ({
+        params: {lang: l}
+    }))
+}
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+
+const code = "class Product(var name: string, price: double)"
+---
+
+<Layout title={t('kiwi.lang')}>
+    <div class="space-y-8">
+        <Hero/>
+        <TryKiwi/>
+        <WhyKiwi/>
+    </div>
+</Layout>

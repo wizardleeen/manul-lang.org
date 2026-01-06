@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/typography';
+
+@theme {
+    --color-link: var(--color-blue-600);
+    --max-width-content: 72rem;
+}
+
+@variant dark (&:where(.dark, .dark *))

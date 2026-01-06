@@ -1,0 +1,16 @@
+---
+
+const {class: className} = Astro.props
+---
+<div class:list={["rounded-xl bg-gray-950 flex flex-col justify-center", className]}>
+    <div class="rounded-xl text-sm p-2">
+      <!-- <div class="flex gap-2 p-2">
+        <span class="size-3 rounded-full bg-white/20"></span>
+        <span class="size-3 rounded-full bg-white/20"></span>
+        <span class="size-3 rounded-full bg-white/20"></span>
+      </div> -->
+      <div class="text-[13px]">
+        <slot/>
+      </div>
+    </div>
+  </div>

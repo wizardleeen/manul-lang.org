@@ -1,0 +1,44 @@
+---
+import Editor from "./Editor.astro"
+import { Code } from "astro-expressive-code/components"
+import HttpRequest from "./HttpRequest.astro"
+import { getLangFromUrl, useTranslations } from "../i18n/ui"
+import { late } from "astro:schema"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+        <section>
+            <div class="grid max-w-content mx-auto">
+                <!-- <h2 class="text-3xl mb-4 px-4 font-bold">{t('try.kiwi')}</h2> -->
+                <div class="p-4 grid gap-4 lg:grid-cols-3 items-stretch">
+                    <Editor class="lg:col-span-2">
+                            <Code lang={"kiwi"} class="h-full" code={`
+class Product(
+    var name: string,
+    var price: double,
+    var stock: int
+) {
+
+    fn reduceStock(amount: int) {
+        require(stock >= amount, "Insufficient stock")
+        stock -= amount
+    }
+
+}`}/>
+                    </Editor>
+                    <HttpRequest request={`
+POST /api/product
+
+{
+    "name": "Shoes",
+    "price": 100,
+    "stock": 100
+}`}/>
+                          </div>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </section>

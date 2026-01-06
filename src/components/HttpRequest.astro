@@ -1,0 +1,120 @@
+---
+import { Code } from "astro-expressive-code/components"
+import { getLangFromUrl, useTranslations, type Key } from "../i18n/ui"
+
+const {request, class: className} = Astro.props
+
+const examples = [
+    {
+        nameKey: 'example.save',
+        code: 
+`POST /api/product
+
+{
+    "name": "Shoes",
+    "price": 100,
+    "stock": 100
+}`
+    },
+    {
+        nameKey: 'example.retrieve',
+        code: "GET /api/product/01f2cf82ba0700"
+    },
+    {
+        nameKey: 'example.invoke',
+        code: 
+`POST /api/product/reduce-stock
+
+{
+    "productId": "01f2cf82ba0700",
+    "amount": 1
+}`
+    }
+] satisfies Array<{nameKey: Key, code: string}>
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+
+---
+
+<div class:list={["http-request rounded-xl bg-gray-950 p-2 text-white", className]}>
+    <div class="flex gap-2 p-2">
+        <span class="size-3 rounded-full bg-white/20"></span>
+        <span class="size-3 rounded-full bg-white/20"></span>
+        <span class="size-3 rounded-full bg-white/20"></span>
+    </div>
+    <div class="flex flex-col gap-2">
+        <div class="rounded bg-[#24292E]">
+            <div class="flex gap-2 p-1 bg-white/2.5 border-b border-b-white/5">
+                {
+                    examples.map((example, index) => (
+                        <button data-content={example.code}
+                            class:list={[
+                                "http-request-tab text-xs/5 inset-ring-white/5 hover:bg-white/10 aria-selected:bg-white/10",
+                                "rounded-sm aria-selected:inset-ring px-2 py-1"
+                            ]}
+                            aria-selected={index === 0 ? "true" : "false"}
+                        >
+                            {t(example.nameKey)}
+                        </button>
+                    ))
+                }
+            </div>
+            <textarea id="example-input" class="w-full p-2 text-white text-sm" rows="7">{examples[0].code}</textarea>
+        </div>
+        <!-- <Code lang="http" code={request}/> -->
+        <div class="bg-[#24292E] min-h-20 rounded p-2">
+            <textarea id="http-request-resp" class="w-full text-sm resize-none" disabled rows="4"></textarea>
+        </div>
+        <div class="flex justify-end">
+            <button id="http-request-send" class="text-gray-950 hover:outline-gray-300 px-4 py-2 rounded bg-amber-400 hover:outline">{t('http.send')}</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const input = document.getElementById("example-input") as HTMLTextAreaElement
+    const tabs = document.querySelectorAll<HTMLButtonElement>('.http-request-tab')
+    let activeTab = tabs[0]
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            activeTab.setAttribute('aria-selected', "false")
+            activeTab.setAttribute('data-content', input.value)
+            tab.setAttribute('aria-selected', 'true')
+            activeTab = tab
+            input.value = tab.getAttribute('data-content') as string
+        })
+    })
+
+    const btn = document.getElementById('http-request-send') as HTMLButtonElement
+    const host = import.meta.env.PUBLIC_KIWI_HOST
+    const appId = import.meta.env.PUBLIC_KIWI_APP_ID
+
+    async function sendRequest(rawString: string) {
+        const [headSection, ...bodyParts] = rawString.split(/\n\s*\n/)
+        const headLines = headSection.trim().split('\n')
+        const requestLine = headLines[0].trim()
+        const [method, path] = requestLine.split(' ')
+        const rawBody = bodyParts.join('\n\n').trim()
+        const url = host + path
+
+        const resp = await fetch(url, {
+            method,
+            headers: method === 'POST' ? {'Content-Type': 'application/json', 'X-App-ID': appId} : {'X-App-ID': appId},
+            body: method === 'POST' ? rawBody : null
+        })
+        const contentType = resp.headers.get('Content-Type')
+        if (contentType?.includes('application/json')) {
+            const json = await resp.json()
+            return JSON.stringify(json, null, 2)
+        } else {
+            return await resp.text()
+        }
+    }
+
+    btn.addEventListener('click', async () => {
+        const resp = await sendRequest(input.value)
+        const respSpan = document.getElementById('http-request-resp')!!
+        respSpan.innerText = resp
+    })
+</script>

@@ -1,0 +1,40 @@
+---
+import { late } from "astro:schema"
+import { getLangFromUrl, useTranslations } from "../i18n/ui"
+import CodeBlock from "./CodeBlock.astro"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+
+<section class="pb-10">
+    <div class="max-w-content mx-auto px-4 pt-20 flex flex-col gap-6 items-center">
+        <h1 class="text-7xl font-bold text-balance text-center">{t('hero.title')}</h1>
+        <p class="text-gray-400 text-lg">{t('hero.subtitle')}</p>
+        <div>
+            <a id="get-started" href={`/${lang}/blog/install`} class="bg-amber-400 px-4 lg:px-10 py-4 lg:text-xl rounded inline-block text-black">
+                {t('get.started')}
+            </a>
+        </div>
+        <div>
+            <CodeBlock>
+                <span id="install-cmd">curl --proto '=https' --tlsv1.2 -sSf https://kiwi.dev/install.sh | sh</span>
+            </CodeBlock>
+        </div>
+    </div>
+</section>
+
+<script is:inline define:vars={{lang}}>
+    const isWindows = navigator.userAgent.includes("Windows");
+    if (isWindows) {
+        const cmdSpan = document.getElementById("install-cmd");
+        if (cmdSpan) {
+            // Standard PowerShell command to download and execute a script
+            cmdSpan.innerText = "iwr https://kiwi.dev/install.ps1 -useb | iex";
+        }
+        const getStarted = document.getElementById("get-stated")
+        if (getStarted) {
+            getStarted.href = `/${lang}/blog/install-win`
+        }
+    }
+</script>

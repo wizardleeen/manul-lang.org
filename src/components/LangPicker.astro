@@ -1,0 +1,26 @@
+---
+import { getLangFromUrl, languages } from "../i18n/ui"
+
+const lang = getLangFromUrl(Astro.url)
+---
+
+<select class="lang-picker">
+    {
+        Object.entries(languages).map(([key, label]) => (
+            <option value={key}
+                selected={key === lang}
+            >{label}</option>
+        ))
+    }
+</select>
+
+<script>
+    const selects = document.querySelectorAll<HTMLSelectElement>('.lang-picker')
+    selects.forEach(select => {
+        select.addEventListener('change', (e) => {
+            const target = e.target as HTMLSelectElement
+            var lang = target.value
+            window.location.href = `/${lang}`
+        })
+    })
+</script>

@@ -1,0 +1,54 @@
+---
+import { getLangFromUrl } from "../../i18n/ui"
+import { languages } from "../../i18n/ui"
+
+const lang = getLangFromUrl(Astro.url)
+
+export function getStaticPaths() {
+    return Object.keys(languages).map(l => ({
+        params: {lang: l}
+    }))
+}
+---
+
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Installation Guide...</title>
+    
+    <!-- Optional: Default meta refresh fallback to the Linux/Mac guide if JS is disabled -->
+    <!-- <meta http-equiv="refresh" content={`2;url=/${lang}/blog/install`} /> -->
+    </head>
+    <body>
+        <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; text-align: center;">
+            <div>
+                <h1>Detecting your operating system...</h1>
+                <p>If you are not redirected automatically, please choose your OS:</p>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin: 10px 0;"><a href={`/${lang}/blog/install-win`}>Windows</a></li>
+                    <li style="margin: 10px 0;"><a href={`/${lang}/blog/install`}>macOS / Linux</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- is:inline ensures this script runs immediately without bundling -->
+        <script is:inline define:vars={{lang}}>
+            (function() {
+                // Default destination (Mac/Linux)
+                var destination = `/${lang}/blog/install`;
+                
+                // Check for Windows in the User Agent
+                if (navigator.userAgent.indexOf("Win") !== -1) {
+                    destination = `/${lang}/blog/install-win`;
+                }
+
+                // Perform the redirect
+                // .replace() is better than .href because it doesn't keep this 
+                // intermediate page in the browser history (Back button works better)
+                window.location.replace(destination);
+            })();
+        </script>
+    </body>
+</html>
