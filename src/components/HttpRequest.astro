@@ -1,8 +1,9 @@
 ---
-import { Code } from "astro-expressive-code/components"
 import { getLangFromUrl, useTranslations, type Key } from "../i18n/ui"
 
-const {request, class: className} = Astro.props
+const {class: className} = Astro.props
+
+const defaultProductId = import.meta.env.PUBLIC_MANUL_INSTANCE_ID
 
 const examples = [
     {
@@ -18,7 +19,7 @@ const examples = [
     },
     {
         nameKey: 'example.retrieve',
-        code: "GET /api/product/01f2cf82ba0700"
+        code: `GET /api/product/${defaultProductId}`
     },
     {
         nameKey: 'example.invoke',
@@ -26,7 +27,7 @@ const examples = [
 `POST /api/product/reduce-stock
 
 {
-    "productId": "01f2cf82ba0700",
+    "productId": "${defaultProductId}",
     "amount": 1
 }`
     }

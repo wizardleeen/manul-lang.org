@@ -70,11 +70,18 @@ const t = useTranslations(lang)
 <script>
     const toggle = document.getElementById('menu-toggle') as HTMLButtonElement
     const mobileMenu = document.getElementById('mobile-menu')!!
-    toggle.addEventListener('click', () => {
-        console.log(mobileMenu.classList)
+    toggle.addEventListener('click', e => {
+        e.stopPropagation()
         if (mobileMenu.classList.contains('hidden'))
             mobileMenu.classList.remove('hidden')
         else
             mobileMenu.classList.add('hidden')
+    })
+
+    document.addEventListener('click', e => {
+        const target = e.target as HTMLElement
+        if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(target)) {
+            mobileMenu.classList.add('hidden')
+        }
     })
 </script>
