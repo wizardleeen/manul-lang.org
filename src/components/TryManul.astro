@@ -11,9 +11,9 @@ const t = useTranslations(lang)
         <section>
             <div class="grid max-w-content mx-auto">
                 <!-- <h2 class="text-3xl mb-4 px-4 font-bold">{t('try.manul')}</h2> -->
-                <div class="p-4 grid gap-4 lg:grid-cols-3 items-stretch">
+                <div class="p-4 grid gap-4 lg:grid-cols-3">
                     <Editor class="lg:col-span-2">
-                            <Code lang={"manul"} class="h-full" code={`
+                            <Code lang={"manul"} class="h-full" wrap={true} code={`
 class Product(
     var name: string,
     var price: double,

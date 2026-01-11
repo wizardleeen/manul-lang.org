@@ -27,6 +27,9 @@ importers:
         specifier: ^4.1.18
         version: 4.1.18
     devDependencies:
+      '@iconify-json/ri':
+        specifier: ^1.2.7
+        version: 1.2.7
       '@tailwindcss/typography':
         specifier: ^0.5.19
         version: 0.5.19(tailwindcss@4.1.18)
@@ -251,6 +254,9 @@ packages:
 
   '@expressive-code/plugin-text-markers@0.41.5':
     resolution: {integrity: sha512-0DSiTsjWFEz6/iuLOGNNy2GaeCW41OwnVJMKx1tS+XKeQxAL89UkZP3egWNzxjWNHNMzEv3ZWWWYqbonEQlv/Q==}
+
+  '@iconify-json/ri@1.2.7':
+    resolution: {integrity: sha512-j/Fkb8GlWY5y/zLj1BGxWRtDzuJFrI7562zLw+iQVEykieBgew43+r8qAvtSajvb75MfUIHjsNOYQPRD8FfLfw==}
 
   '@iconify/tools@4.2.0':
     resolution: {integrity: sha512-WRxPva/ipxYkqZd1+CkEAQmd86dQmrwH0vwK89gmp2Kh2WyyVw57XbPng0NehP3x4V1LzLsXUneP1uMfTMZmUA==}
@@ -2149,6 +2155,10 @@ snapshots:
   '@expressive-code/plugin-text-markers@0.41.5':
     dependencies:
       '@expressive-code/core': 0.41.5
+
+  '@iconify-json/ri@1.2.7':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify/tools@4.2.0':
     dependencies:

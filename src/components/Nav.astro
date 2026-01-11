@@ -1,0 +1,80 @@
+---
+import { Icon } from "astro-icon/components"
+import { getLangFromUrl, type Key, useTranslations } from "../i18n/ui"
+import LangPicker from "./LangPicker.astro"
+
+
+const lang = getLangFromUrl(Astro.url)
+
+const menus = [
+    {label: 'menu.doc', url: 'https://docs.manul-lang.org'},
+    {label: 'menu.blog', url: `/${lang}/blog`}
+] satisfies Array<{label: Key, url: string}>
+
+const t = useTranslations(lang)
+---
+<nav>
+    <div class="relative border-b border-b-gray-200 dark:border-b-gray-700">
+        <div class="p-4 flex justify-between">
+            <div class="flex gap-16 items-center">
+                <a class="flex items-center gap-4" href={lang === 'en' ? '/' : `/${lang}`}>
+                    <Icon name="manul" class="size-15"/>
+                    <h1 class="text-2xl md:text-4xl">{t('manul')}</h1>
+                </a>
+                <ul class="hidden md:flex gap-4 items-center">
+                    {
+                        menus.map(menu => (
+                            <li>
+                                <a href={menu.url} class="text-xl">
+                                    {t(menu.label)}
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+            <div class="hidden md:flex items-center gap-4">
+                <a href="https://github.com/wizardleeen/manul">
+                    <Icon name="ri:github-fill" class="size-6"/>
+                </a>
+                <LangPicker/>
+            </div>
+            <button id="menu-toggle" class="md:hidden cursor-pointer">
+                <Icon name="ri:menu-line" class="size-6" />
+            </button>
+        </div>
+         <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute left-0 top-full w-full bg-white dark:bg-gray-800 z-50a shadow-lg">
+            <ul class="flex flex-col gap-6 border-b border-b-gray-200 dark:border-b-gray-700 p-6">
+                {
+                    menus.map(menu => (
+                        <li>
+                            <a href={menu.url} class="text-xl">
+                                {t(menu.label)}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+
+            <div class="flex gap-6 items-center p-4">
+                <a href="https://github.com/wizardleeen/manul">
+                    <Icon name="ri:github-fill" class="size-6"/>
+                </a>
+                <LangPicker/>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    const toggle = document.getElementById('menu-toggle') as HTMLButtonElement
+    const mobileMenu = document.getElementById('mobile-menu')!!
+    toggle.addEventListener('click', () => {
+        console.log(mobileMenu.classList)
+        if (mobileMenu.classList.contains('hidden'))
+            mobileMenu.classList.remove('hidden')
+        else
+            mobileMenu.classList.add('hidden')
+    })
+</script>

@@ -1,6 +1,6 @@
 ---
 import { getLangFromUrl, languages } from "../../i18n/ui.ts"
-import IndexPage from '../../components/Index.astro'
+import IndexPage from '../../components/IndexPage.astro'
 
 export function getStaticPaths() {
     return Object.keys(languages).filter(l => l !== 'en').map(l => ({

@@ -1,0 +1,37 @@
+---
+import ThemeToggle from "./ThemeToggle.astro"
+import LangPicker from "./LangPicker.astro"
+import { Icon } from "astro-icon/components"
+import { getLangFromUrl, useTranslations } from "../i18n/ui"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+
+<footer class="py-8 bg-gray-800 text-gray-200">
+    <div class="max-w-content mx-auto px-4">
+        <div class="flex justify-between items-center mb-6">
+            <ul class="flex flex-col md:flex-row divide-white/30 md:items-center gap-4">
+                <li class="">
+                    <a href="https://docs.manul-lang.org">{t('menu.doc')}</a>
+                </li>
+                <li class="">
+                    <a href=`/${lang}/blog`>{t('menu.blog')}</a>
+                </li>
+                <li class="">
+                    <a href="https://github.com/wizardleeen/manul">Github</a>
+                </li>
+            </ul>
+            <div class="flex gap-4">
+                <ThemeToggle/>
+                <LangPicker/>
+            </div>
+        </div>
+        <div class="flex gap-4 items-center">
+            <Icon name="manul" class="size-5"></Icon>
+            <p>
+                <a href="https://raw.githubusercontent.com/manul-language/manul/refs/heads/main/LICENSE">{t('apachev2.license')} &copy; 2026</a>
+            </p>
+        </div>
+    </div>
+</footer>

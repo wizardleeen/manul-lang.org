@@ -7,7 +7,7 @@
 set -e
 
 MANUL_VERSION="0.0.1"
-REPO="manul-language/manul"
+REPO="wizardleeen/manul"
 INSTALL_DIR="$HOME/.manul"
 BIN_LINK_DIR="$HOME/.local/bin"
 
