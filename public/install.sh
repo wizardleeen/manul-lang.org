@@ -29,14 +29,14 @@ ASSET_NAME=""
 
 if [ "$OS" = "Linux" ]; then
     if [ "$ARCH" = "x86_64" ]; then
-        ASSET_NAME="manul-linux-amd64.zip"
+        ASSET_NAME="manul-linux-amd64.tar.gz"
     else
         printf "${RED}Error: Linux architecture $ARCH is not supported yet.${NC}\n"
         exit 1
     fi
 elif [ "$OS" = "Darwin" ]; then
     if [ "$ARCH" = "arm64" ]; then
-        ASSET_NAME="manul-macos-aarch64.zip"
+        ASSET_NAME="manul-macos-aarch64.tar.gz"
     else
         printf "${RED}Error: macOS architecture $ARCH (Intel) is not supported.${NC}\n"
         exit 1
@@ -52,24 +52,25 @@ DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${MANUL_VERSION}/${AS
 # 2. Check Dependencies
 # -----------------------------------------------------------------------------
 if ! command -v curl > /dev/null; then printf "${RED}Error: curl required.${NC}\n"; exit 1; fi
-if ! command -v unzip > /dev/null; then printf "${RED}Error: unzip required.${NC}\n"; exit 1; fi
+if ! command -v tar > /dev/null; then printf "${RED}Error: tar required.${NC}\n"; exit 1; fi
 
 # -----------------------------------------------------------------------------
 # 3. Download & Extract
 # -----------------------------------------------------------------------------
 TEMP_DIR=$(mktemp -d)
-ZIP_FILE="${TEMP_DIR}/${ASSET_NAME}"
+ARCHIVE_FILE="${TEMP_DIR}/${ASSET_NAME}"
 EXTRACT_DIR="${TEMP_DIR}/extract"
 
 printf "Downloading ${BLUE}${ASSET_NAME}${NC}...\n"
-curl -L --fail --progress-bar "$DOWNLOAD_URL" -o "$ZIP_FILE"
+curl -L --fail --progress-bar "$DOWNLOAD_URL" -o "$ARCHIVE_FILE"
 
 printf "Extracting files...\n"
 mkdir -p "$EXTRACT_DIR"
-unzip -q "$ZIP_FILE" -d "$EXTRACT_DIR"
+
+tar -xzf "$ARCHIVE_FILE" -C "$EXTRACT_DIR"
 
 SOURCE_DIR="$EXTRACT_DIR"
-# Handle nested folder if zip contains a root folder
+# Handle nested folder if tar contains a root folder
 if [ $(ls -1 "$EXTRACT_DIR" | wc -l) -eq 1 ]; then
     NESTED_DIR=$(ls -1 "$EXTRACT_DIR")
     if [ -d "$EXTRACT_DIR/$NESTED_DIR" ]; then

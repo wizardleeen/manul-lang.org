@@ -23,18 +23,69 @@ Write-Blue "Starting Manul Installer (v$ManulVersion)..."
 # -----------------------------------------------------------------------------
 $Arch = $env:PROCESSOR_ARCHITECTURE
 $AssetName = ""
+$VcRedistUrl = ""
+$VcRegKey = ""
 
 if ($Arch -eq "AMD64") {
     $AssetName = "manul-windows-amd64.zip"
+    # Link for Visual Studio 2015-2022 Redistributable (x64)
+    $VcRedistUrl = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+    $VcRegKey = "HKLM:\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64"
 } elseif ($Arch -eq "ARM64") {
-    # Assuming arm64 support exists in your release assets
     $AssetName = "manul-windows-arm64.zip"
+    # Link for Visual Studio 2015-2022 Redistributable (ARM64)
+    $VcRedistUrl = "https://aka.ms/vs/17/release/vc_redist.arm64.exe"
+    $VcRegKey = "HKLM:\SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\arm64"
 } else {
     Write-Red "Error: Architecture $Arch is not supported."
     exit 1
 }
 
 $DownloadUrl = "https://github.com/$Repo/releases/download/$ManulVersion/$AssetName"
+
+# -----------------------------------------------------------------------------
+# 1.5 Check Prerequisites (Visual C++ Redistributable)
+# -----------------------------------------------------------------------------
+Write-Host "Checking system prerequisites..."
+$VcInstalled = Test-Path $VcRegKey
+
+if (-not $VcInstalled) {
+    Write-Yellow "Visual C++ Redistributable is missing. Installing..."
+    
+    $VcTempFile = Join-Path [System.IO.Path]::GetTempPath() "vc_redist_installer.exe"
+    
+    Write-Host "Downloading VC++ Redistributable..."
+    try {
+        Invoke-WebRequest -Uri $VcRedistUrl -OutFile $VcTempFile -UseBasicParsing
+    } catch {
+        Write-Red "Failed to download VC++ Redistributable. Please install it manually."
+        exit 1
+    }
+
+    Write-Blue "Requesting permission to install VC++ Redistributable..."
+    Write-Host "(A User Account Control (UAC) prompt may appear)"
+    
+    try {
+        # Arguments: /install /passive (show progress bar but no user interaction) /norestart
+        $Process = Start-Process -FilePath $VcTempFile -ArgumentList "/install", "/passive", "/norestart" -PassThru -Wait -Verb RunAs
+        
+        # Check exit codes: 0 = Success, 3010 = Success (Reboot Required)
+        if ($Process.ExitCode -eq 0 -or $Process.ExitCode -eq 3010) {
+            Write-Green "VC++ Redistributable installed successfully."
+        } else {
+            Write-Red "VC++ installation failed with exit code: $($Process.ExitCode)"
+            Write-Red "Please install 'Visual C++ Redistributable 2015-2022' manually."
+            exit 1
+        }
+    } catch {
+        Write-Red "Installation cancelled or failed. Admin privileges are required for VC++ installation."
+        exit 1
+    } finally {
+        if (Test-Path $VcTempFile) { Remove-Item $VcTempFile -Force }
+    }
+} else {
+    Write-Green "Visual C++ Redistributable is already installed."
+}
 
 # -----------------------------------------------------------------------------
 # 2. Pre-Check: Stop existing services to release file locks
