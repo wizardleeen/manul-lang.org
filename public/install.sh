@@ -47,21 +47,44 @@ else
 fi
 
 # -----------------------------------------------------------------------------
-# 1.5. Detect Region (GitHub vs Gitee)
+# 1.5. Detect Region
 # -----------------------------------------------------------------------------
 # Default to GitHub
 BASE_DOMAIN="github.com"
 
-# Check dependencies early for the region check
+# Check dependencies
 if ! command -v curl > /dev/null; then printf "${RED}Error: curl required.${NC}\n"; exit 1; fi
 
 printf "Detecting region to select best mirror...\n"
 
-# Try to get country code with a 10-second timeout
-COUNTRY_CODE=$(curl -s -m 10 https://ipapi.co/country_code || echo "UNKNOWN")
+is_china() {
+    # 1. Allow manual override via environment variable (e.g., REGION=CN ./install.sh)
+    if [ "$REGION" = "CN" ]; then
+        return 0
+    fi
 
-if [ "$COUNTRY_CODE" = "CN" ]; then
-    printf "${YELLOW}China region detected (CN). Switching to Gitee mirror.${NC}\n"
+    # 2. Timezone Check (Fast, Local)
+    # Checks if timezone is Asia/Shanghai, Asia/Chongqing, or PRC
+    if grep -q -E "Asia/Shanghai|Asia/Chongqing|PRC" /etc/localtime 2>/dev/null; then
+        return 0
+    fi
+
+    # 3. Network Connectivity Check (The "Google vs Baidu" test)
+    # Try to connect to Google (Short timeout). If fails, check Baidu.
+    # -I: Fetch headers only (fast)
+    # --connect-timeout 2: Wait max 2 seconds
+    if ! curl -s --connect-timeout 2 -I https://www.google.com >/dev/null; then
+        # Google failed, check Baidu to confirm internet works and we are in CN
+        if curl -s --connect-timeout 2 -I https://www.baidu.com >/dev/null; then
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+if is_china; then
+    printf "${YELLOW}China region detected. Switching to Gitee mirror.${NC}\n"
     BASE_DOMAIN="gitee.com"
 else
     printf "Using default mirror (${BASE_DOMAIN}).\n"
