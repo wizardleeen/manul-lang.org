@@ -20,7 +20,7 @@ let {Content} = await page.render()
 ---
 
 <Layout title={page.data.title}>
-    <div class="max-w-content mx-auto p-4">
+    <div class="max-w-content mx-auto px-4 py-12">
         <article>
             <h2 class="text-3xl mb-2">{page.data.title}</h2>
             <p class="text-gray-500 mb-2">{page.data.date.toISOString().split('T')[0]}</p>
