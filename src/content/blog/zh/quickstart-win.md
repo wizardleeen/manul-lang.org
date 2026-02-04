@@ -8,7 +8,7 @@ date: 2026-01-06
 在 PowerShell 中运行以下命令下载并安装二进制文件：
 
 ```powershell
-irm https://manul-lang.org/install.ps1 | iex
+irm https://manul.build/install.ps1 | iex
 ```
 
 ### 2. 配置环境

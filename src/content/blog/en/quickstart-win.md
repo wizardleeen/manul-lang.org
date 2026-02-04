@@ -8,7 +8,7 @@ date: 2026-01-06
 Run the following command in PowerShell to download and install the binary:
 
 ```powershell
-irm https://manul-lang.org/install.ps1 | iex
+irm https://manul.build/install.ps1 | iex
 ```
 
 ### 2. Configure Shell
@@ -36,7 +36,7 @@ manul create-app quickstart
 manul set-app quickstart
 
 # Create a sample file
-"class Product(var name: string)" | Set-Content test.manul
+"class Product(var name: string)" | Set-Content test.mnl
 
 # Deploy
 manul deploy

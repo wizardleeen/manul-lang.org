@@ -280,6 +280,35 @@ WshShell.Run """$ExePath""", 0, False
 }
 
 # -----------------------------------------------------------------------------
+# 7.5 Create Restart Utility
+# -----------------------------------------------------------------------------
+$RestartScript = "$BinDir\manul-restart.cmd"
+Write-Host "Creating utility script: " -NoNewline; Write-Blue $RestartScript
+
+# Create a Batch file that kills the process and triggers the scheduled task
+$RestartContent = @"
+@echo off
+echo Restarting manul-server...
+
+:: 1. Force kill existing process (suppress errors if not running)
+taskkill /F /IM "manul-server.exe" >nul 2>&1
+
+:: 2. Wait a moment
+timeout /t 1 /nobreak >nul
+
+:: 3. Run the scheduled task to start it in background
+schtasks /Run /TN "$TaskName" >nul 2>&1
+
+if %errorlevel% equ 0 (
+    echo [OK] Service restarted.
+) else (
+    echo [ERR] Failed to start scheduled task '$TaskName'.
+)
+"@
+
+Set-Content -Path $RestartScript -Value $RestartContent -Force
+
+# -----------------------------------------------------------------------------
 # 8. Completion
 # -----------------------------------------------------------------------------
 Write-Host ""

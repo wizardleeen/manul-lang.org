@@ -8,7 +8,7 @@ date: 2026-01-06
 运行以下命令下载并执行安装脚本：
 
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://manul-lang.org/install.sh | sh
+curl --proto '=https' --tlsv1.2 -sSf https://manul.build/install.sh | sh
 ```
 
 ### 2. 重载 Shell 配置

@@ -3,7 +3,6 @@ import Editor from "./Editor.astro"
 import { Code } from "astro-expressive-code/components"
 import HttpRequest from "./HttpRequest.astro"
 import { getLangFromUrl, useTranslations } from "../i18n/ui"
-import { late } from "astro:schema"
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
@@ -27,14 +26,7 @@ class Product(
 
 }`}/>
                     </Editor>
-                    <HttpRequest request={`
-POST /api/product
-
-{
-    "name": "Shoes",
-    "price": 100,
-    "stock": 100
-}`}/>
+                    <HttpRequest/>
                           </div>
                 </div>
                 <div>

@@ -3,6 +3,7 @@ import ThemeToggle from "./ThemeToggle.astro"
 import LangPicker from "./LangPicker.astro"
 import { Icon } from "astro-icon/components"
 import { getLangFromUrl, useTranslations } from "../i18n/ui"
+const slidesUrl = import.meta.env.PUBLIC_SLIDES_URL
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
@@ -13,7 +14,10 @@ const t = useTranslations(lang)
         <div class="flex justify-between items-center mb-6">
             <ul class="flex flex-col md:flex-row divide-white/30 md:items-center gap-4">
                 <li class="">
-                    <a href="https://docs.manul-lang.org">{t('menu.doc')}</a>
+                    <a href="https://docs.manul.build">{t('menu.doc')}</a>
+                </li>
+                <li class="">
+                    <a href={slidesUrl}>{t('menu.intro')}</a>
                 </li>
                 <li class="">
                     <a href=`/${lang}/blog`>{t('menu.blog')}</a>

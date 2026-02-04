@@ -1,25 +1,55 @@
 ---
 import { getLangFromUrl, useTranslations, type Key } from "../i18n/ui"
+import { Icon } from 'astro-icon/components'
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 
 const features = [
-    {titleKey: 'feature1.title', 'contentKey': 'feature1.content'},
-    {titleKey: 'feature2.title', 'contentKey': 'feature2.content'},
-    {titleKey: 'feature3.title', 'contentKey': 'feature3.content'},
-] satisfies Array<{titleKey: Key, contentKey: Key}>
+    {
+        titleKey: 'feature1.title', 
+        contentKey: 'feature1.content', 
+        icon: 'lucide:database'
+    },
+    {
+        titleKey: 'feature2.title', 
+        contentKey: 'feature2.content', 
+        icon: 'lucide:arrow-left-right'
+    },
+    {
+        titleKey: 'feature3.title', 
+        contentKey: 'feature3.content', 
+        icon: 'lucide:webhook'
+    },
+    {
+        titleKey: 'feature4.title', 
+        contentKey: 'feature4.content', 
+        icon: 'lucide:search'
+    },
+] satisfies Array<{titleKey: Key, contentKey: Key, code?: string, icon: string}>
 ---
 
 <section class="dark:bg-gray-700">
     <div class="max-w-content mx-auto px-4 pt-8 pb-16">
-        <h2 class="text-3xl mb-4 font-bold">{t('why.manul')}</h2>
-        <div class="grid md:grid-cols-3 gap-12">
+        <h2 class="text-3xl mb-8 font-bold text-center md:text-left">{t('why.manul')}</h2>
+        <div class="grid md:grid-cols-2 gap-12">
             {
                 features.map(feature => (
-                    <div>
-                        <h3 class="text-2xl xl mb-4">{t(feature.titleKey)}</h3>
-                        <p>{t(feature.contentKey)}</p>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center gap-3">
+                            <Icon 
+                                name={feature.icon} 
+                                class="w-8 h-8 mt-1 shrink-0" 
+                            />
+                            
+                            <h3 class="text-2xl font-semibold leading-tight">
+                                {t(feature.titleKey)}
+                            </h3>
+                        </div>
+                        
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                            {t(feature.contentKey)}
+                        </p>
                     </div>
                 ))
             }

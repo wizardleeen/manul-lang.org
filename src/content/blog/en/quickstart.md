@@ -9,7 +9,7 @@ date: 2026-01-06
 Run the following command to download and install the binary:
 
 ```bash
-curl -sSf https://manul-lang.org/install.sh | sh
+curl -sSf https://manul.build/install.sh | sh
 ```
 
 ### 2. Update Your Path
