@@ -9,7 +9,7 @@ const examples = [
     {
         nameKey: 'example.save',
         code: 
-`POST /api/product
+`POST /products
 
 {
     "name": "Shoes",
@@ -19,15 +19,14 @@ const examples = [
     },
     {
         nameKey: 'example.retrieve',
-        code: `GET /api/product/${defaultProductId}`
+        code: `GET /products/${defaultProductId}`
     },
     {
         nameKey: 'example.invoke',
         code: 
-`POST /api/product/reduce-stock
+`POST /products/${defaultProductId}/reduce-stock
 
 {
-    "productId": "${defaultProductId}",
     "amount": 1
 }`
     }
@@ -97,11 +96,11 @@ const t = useTranslations(lang)
         const requestLine = headLines[0].trim()
         const [method, path] = requestLine.split(' ')
         const rawBody = bodyParts.join('\n\n').trim()
-        const url = host + path
+        const url = host + '/' + appId + path
 
         const resp = await fetch(url, {
             method,
-            headers: method === 'POST' ? {'Content-Type': 'application/json', 'X-App-ID': appId} : {'X-App-ID': appId},
+            headers: method === 'POST' ? {'Content-Type': 'application/json'}: {},
             body: method === 'POST' ? rawBody : null
         })
         const contentType = resp.headers.get('Content-Type')

@@ -2,13 +2,14 @@
 import { Icon } from "astro-icon/components"
 import { getLangFromUrl, type Key, useTranslations } from "../i18n/ui"
 import LangPicker from "./LangPicker.astro"
+const docsUrl = import.meta.env.PUBLIC_DOCS_URL
 const slidesUrl = import.meta.env.PUBLIC_SLIDES_URL
 
 
 const lang = getLangFromUrl(Astro.url)
 
 const menus = [
-    {label: 'menu.doc', url: 'https://docs.manul.build'},
+    {label: 'menu.doc', url: docsUrl},
     {label: 'menu.intro', url: slidesUrl},
     {label: 'menu.blog', url: `/${lang}/blog`}
 ] satisfies Array<{label: Key, url: string}>
